@@ -22,36 +22,7 @@
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE TypeOperators #-}
-module Thrift.Compiler.Types
-  ( Status(..), IfResolved, Parsed
-  , Program(..), Header(..), IncludeType(..), Decl(..), SpliceFile
-  , Loc(..), noLoc, nlc, Comment(..), Located(..)
-  , Separator(..), getSepLoc
-  , Annotations(..), Annotation(..), AnnValue(..), getAnns, annLoc
-  , StructuredAnnotation(..), StructuredAnnotationElems(..)
-  , ThriftPriority(..)
-  , Env(..), emptyEnv, Context(..), emptyContext
-  , TypeMap, SchemaMap, UnionMap, EnumMap, ConstMap, ServiceMap, ImportMap
-  , EnumValues, EnumInt
-  , Typedef(..), TypedefTag(..), TypedefLoc(..)
-  , Const(..), ConstLoc(..)
-  , UntypedConst(..), ConstVal(..), ListElem(..), MapPair(..), QuoteType(..)
-  , StructPair (..)
-  , TypedConst(..)
-  , List(..), Set(..), HashSet(..), Map(..), HashMap(..), EnumVal(..), New(..)
-  , StructVal(..), ExceptionVal(..), UnionVal(..), MembershipProof(..)
-  , Struct(..), StructType(..), StructLoc(..)
-  , Field(..), FieldLoc(..), FieldType(..), FieldTag(..), FieldId
-  , Requiredness(..), Laziness(..)
-  , Union(..), UnionAlt(..), PossiblyEmpty(..), EmptyName
-  , Enum(..), EnumValue(..), EnumValLoc(..)
-  , Service(..), Super(..), Function(..), FunLoc(..), ThrowsLoc(..)
-  , Type, AnnotatedType(..), TType(..), SomeAnnTy(..)
-  , TypeLoc(..), GetArity, getTypeLoc
-  , SCHEMA(..), Schema, USchema
-  , SpecialType
-  , Name(..), ThriftName, Name_(..), localName, mapName, mkName
-  ) where
+module Thrift.Compiler.Types where
 
 import Prelude hiding (Enum)
 import Data.ByteString (ByteString)
@@ -62,9 +33,6 @@ import Data.Text (Text)
 import GHC.TypeLits
 import qualified Data.Map as Map
 import qualified Data.Set as Set
-
-import Language.Haskell.Exts.SrcLoc (SrcSpanInfo)
-import Language.Haskell.Exts.Syntax (Module)
 
 import Thrift.Compiler.Options
 
@@ -92,7 +60,6 @@ data Program (l :: * {- Language -}) a = Program
   , progHSName    :: Text           -- ^ Haskell module prefix (with namespace)
   , progPath      :: FilePath
   , progOutPath   :: FilePath
-  , progInstances :: SpliceFile
   , progIncludes  :: [Program l a]
   , progHeaders   :: [Header a]
   , progDecls     :: [Decl 'Resolved l a]
@@ -126,8 +93,6 @@ data Decl s l a
   | D_Typedef (Typedef s l a)
   | D_Const (Const s l a)
   | D_Service (Service s l a)
-
-type SpliceFile = Maybe (Module SrcSpanInfo)
 
 data Annotations a = Annotations
   { annList :: [Annotation a]
